@@ -9,8 +9,7 @@ import com.goat.weatherapp.model.HourlyData
 import com.goat.weatherapp.utils.TimeUtil
 import javax.inject.Inject
 
-class MainAdapter
-@Inject constructor(
+class MainAdapter @Inject constructor (
     private var hourlyDatum: List<HourlyData>
 ) : RecyclerView.Adapter<MainAdapter.DataViewHolder>() {
 

@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
 import com.goat.weatherapp.R
 import com.goat.weatherapp.databinding.FragmentMainBinding
 import com.goat.weatherapp.model.Weather
@@ -41,11 +42,7 @@ class MainFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         requestPermissions()
 
         binding.weatherCard.setOnClickListener {
-            requireActivity().supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragment, DetailFragment.newInstance())
-                .addToBackStack(null)
-                .commit()
+            Navigation.findNavController(binding.root).navigate(R.id.navigateToDetailFragment)
         }
 
         return binding.root
@@ -81,11 +78,10 @@ class MainFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     private fun bindView(weather: Weather) {
         binding.apply {
-            val daily = weather.daily.data[0]
             weatherIcon.setIconResource(
                 getString(
                     requireActivity().resources.getIdentifier(
-                        "wi_forecast_io_" + daily.icon.replace("-", "_"), "string",
+                        "wi_forecast_io_" + weather.currently.icon.replace("-", "_"), "string",
                         requireActivity().packageName
                     )
                 )
@@ -93,6 +89,7 @@ class MainFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             timeZone.text = weather.timezone
             dateAndTime.text = TimeUtil.convertDate(weather.currently.time)
             currentCondition.text = weather.currently.icon
+            val daily = weather.daily.data[0]
             highTemp.text = requireActivity()
                 .getString(R.string.temp, daily.apparentTemperatureHigh.toString())
             lowTemp.text = requireActivity()
@@ -151,6 +148,5 @@ class MainFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     companion object {
         private const val REQUEST_COARSE_LOCATION = 99
-        fun newInstance() = MainFragment()
     }
 }
